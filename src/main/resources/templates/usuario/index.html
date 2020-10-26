@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{layout}">
+<!--Define o arquivo de layout que será utilizado -->
+<head>
+<meta charset="UTF-8">
+<title>Nac 02 Devops - Usuários</title>
+</head>
+<body>
+
+
+	<div layout:fragment="corpo">
+
+		<h1>Bem vindo ao cadastro de Usuários!</h1>
+
+		<div th:text="${msg}" class="alert alert-success"
+			th:if="${msg != null}"></div>
+
+		<table class="table">
+			<tr>
+				<th>Nome</th>
+				<th>Senha</th>
+				<th>Email</th>
+				<th></th>
+			</tr>
+			<tr th:each="u:${usuarios}">
+				<td th:text="${u.nome}"></td>
+				<td th:text="${u.senha}"></td>
+				<td th:text="${u.email}"></td>
+				<td><a th:href="@{/usuario/editar/} + ${u.codigo}"
+					class="btn btn-sm btn-outline-primary">Editar</a>
+
+
+					<button th:onclick="|usuario.value = ${u.codigo}|" type="button"
+						class="btn btn-sm btn-outline-danger" data-toggle="modal"
+						data-target="#exampleModal">Remover</button></td>
+			</tr>
+		</table>
+
+		<!-- Modal -->
+		<div class="modal fade" id="exampleModal" tabindex="-1"
+			aria-labelledby="exampleModalLabel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="exampleModalLabel">Confirmação</h5>
+						<button type="button" class="close" data-dismiss="modal"
+							aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+					<div class="modal-body">Deseja realmente excluir o usuário?</div>
+					<div class="modal-footer">
+						<form th:action="@{/usuario/remover}" method="post">
+							<input type="hidden" name="id" id="animal">
+							<button type="button" class="btn btn-secondary"
+								data-dismiss="modal">Não</button>
+							<button type="submit" class="btn btn-danger">Sim</button>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+
+	</div>
+
+</body>
+</html>

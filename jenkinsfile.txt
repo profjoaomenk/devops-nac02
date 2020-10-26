@@ -1,0 +1,42 @@
+pipeline{
+    
+    agent any
+
+    stages{
+        stage('01 - Copiar código fonte do GitHub'){
+            steps{
+                echo 'Extraindo codigo fonte...'
+                checkout([$class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[url: 'https://github.com/E-Nozes/devops-nac02.git']]])
+                echo 'Código extraído com sucesso!'         
+            }
+        }
+        stage('02 - Realizar Build do Maven'){
+            steps{
+                echo 'Iniciando Maven Build'
+                
+                withMaven(maven : 'maven_3.6.3'){
+                    bat "mvn clean install"
+                }
+                echo 'Build Realizada com Sucesso!'
+            }
+        }
+        stage('03 - Solicitando confirmação para Deploy'){
+            steps{
+                echo 'Iniciando solicitação de Deploy'
+                
+                input 'Deseja confirmar o Deploy?'
+                
+                echo 'Final da solicitação'
+            }
+        }
+        stage('04 - Realizando o Deploy no TomCat (Caso Aprovado)'){
+            steps{
+                echo 'Iniciando Deploy'
+                
+                bat 'copy C:\\Windows\\System32\\config\\systemprofile\\AppData\\Local\\Jenkins\\.jenkins\\workspace\\Enozes\\target\\*.war D:\\Programas\\Tomcat\\Webapps'
+                
+                echo 'Final do Deploy'
+            }
+        }
+    }
+}
